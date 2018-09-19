@@ -199,6 +199,8 @@ class Menu extends \source\core\base\BaseActiveRecord
         $menus = self::find()->where(['category_id'=>$category,'parent_id'=>$parentId])->orderBy('sort_num asc')->asArray()->all();
         $actions=Relation::find()->where(['menu_id'=>$parentId,'role'=>$role])->asArray()->all();
         $menusWithRole=[];
+        $type=LuLu::getIdentity()->type;
+
         foreach ($menus as $menu) {
             foreach ($actions as $action) {
                 $true=strpos('/'.$action['permission'],$menu['url']);
@@ -206,6 +208,24 @@ class Menu extends \source\core\base\BaseActiveRecord
                 if(($true!==false || $true1!==false)&& !in_array($menu,$menusWithRole)){
                    $menusWithRole[]=$menu;
                 }
+            }
+
+        }
+        if($type==2){
+            $permission=json_decode(Permission::getPermissionsByString(LuLu::getIdentity()->permission),true);
+            foreach ($menusWithRole as $url=>$menu) {
+                $flag=false;
+                $route=ltrim($menu['url'],'/');
+                foreach ($permission as $key=>$per) {
+                    if((strpos($route,$key) !==false) || (strpos($key,$route) !==false) ){
+                        $flag=true;
+                        break;
+                    }
+                }
+                if(!$flag){
+                    unset($menusWithRole[$url]);
+                }
+
             }
 
         }

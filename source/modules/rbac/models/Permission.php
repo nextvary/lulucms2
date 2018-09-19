@@ -49,7 +49,21 @@ class Permission extends BaseRbacActiveRecord
 		];
 		return ArrayHelper::getItems($items,$key);
 	}
-	public function getFormView()
+
+    public static function getPermissionsByString($permission)
+    {
+        $need=explode('|',$permission);
+        foreach ($need as $item) {
+            $index=strpos($item,'_');
+            $permission=substr($item,0,$index);
+            $value=substr($item,$index+1);
+            $value=explode(',',$value);
+            $my[$permission]=$value;
+        }
+        return json_encode($my);
+    }
+
+    public function getFormView()
 	{
 	    $items = [
 	        self::Form_Boolean=>'_boolean',

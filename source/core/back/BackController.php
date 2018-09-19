@@ -25,19 +25,26 @@ class BackController extends BaseController
         {
             LuLu::go(['/site/login']);
         }
-        
+
         if (! $this->rbacService->checkPermission('manager_admin'))
         {
             return $this->showMessage();
         }
-        
+
         //return parent::beforeAction($action);
-        
+
         if(in_array($action->uniqueID, $this->ingorePermission()))
         {
             return parent::beforeAction($action);
         }
-        
+        //这里是角色下的账户的权限
+        if(LuLu::getIdentity()->type==2){
+            if(!$this->rbacService->checkMinPermission()){
+                return $this->showMessage();
+            }else{
+                return parent::beforeAction($action);
+            }
+        }
         if(! $this->rbacService->checkPermission())
         {
             return $this->showMessage();
@@ -53,6 +60,7 @@ class BackController extends BaseController
         return [
             'site/login',
             'site/captcha',
+            'site/logout',
         ];
     }
    

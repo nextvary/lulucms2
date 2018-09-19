@@ -6,6 +6,7 @@ use source\modules\rbac\models\Role;
 use source\modules\rbac\models\Assignment;
 use source\modules\rbac\models\Permission;
 use source\modules\rbac\models\Relation;
+use Yii;
 use yii\db\Query;
 use source\modules\rbac\models\Category;
 use source\LuLu;
@@ -82,6 +83,24 @@ class RbacService extends \source\core\modularity\ModuleService
         $all=Relation::find()->where(['role'=>$role])->select('menu_id')->andWhere(['!=','menu_id',0])->groupBy('menu_id')->asArray()->all();
         $menu_id=array_column($all,'menu_id');
         $menus=Menu::find()->where(['id'=>$menu_id])->orderBy("sort_num asc")->asArray()->all();
+        $type=LuLu::getIdentity()->type;
+        if ($type==2){
+            $permission=json_decode(Permission::getPermissionsByString(LuLu::getIdentity()->permission),true);
+            $need=[];
+            foreach ($menus as $menu) {
+                $url=(Menu::find()->where(['parent_id'=>$menu['id']])->select("group_concat(url) as url")->asArray()->one())['url'];
+                foreach ($permission as $key=>$p) {
+                    $true1=strpos($key,$url);
+                    $true2=strpos($url,$key);
+                    if(($true1 ||$true2) && !in_array($menu,$need)){
+                        $need[]=$menu;
+                    }
+                }
+
+
+            }
+           $menus=$need;
+        }
         return $menus;
     }
 
@@ -193,12 +212,12 @@ class RbacService extends \source\core\modularity\ModuleService
             $username = LuLu::getIdentity()->username;
         }
         $rows = $this->getPermissionsByUser($username);
-        
+
         if (! isset($rows[$permission]))
         {
             return false;
         }
-        
+
         return $this->executeRule($rows[$permission], $params,$username);
     }
 
@@ -262,5 +281,25 @@ class RbacService extends \source\core\modularity\ModuleService
     public function getAllRoles()
     {
         return Role::buildOptions();
+    }
+
+    public function checkMinPermission()
+    {
+        $permission=LuLu::getIdentity()->permission;
+        $permission=json_decode(Permission::getPermissionsByString($permission),true);
+        $route=LuLu::getApp()->requestedRoute;
+        $action=LuLu::getApp()->requestedAction->id;
+//        var_dump($route,$action,$permission);
+        foreach ($permission as $key=>$per) {
+            if(strpos($key,$route)!==false || strpos($route,$key)!==false ){
+                $method = LuLu::getApp()->request->method;
+                $method = strtolower($method);
+                if(in_array($action,$per) || in_array($action . ':' . $method, $per) ){
+                    return true;
+                }
+            }
+
+        }
+        return false;
     }
 }

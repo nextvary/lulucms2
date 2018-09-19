@@ -9,6 +9,7 @@ class ControllerRule extends Rule
 
     public function execute($permission, $params = [], $role = null)
     {
+
         $actionId = isset($params['actionId']) ? $params['actionId'] : LuLu::getApp()->requestedAction->id;
         
         $actions = $permission['value'];

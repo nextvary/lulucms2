@@ -2,6 +2,7 @@
 
 namespace source\modules\rbac\admin\controllers;
 
+use source\models\User;
 use Yii;
 use source\modules\rbac\models\Role;
 use source\modules\rbac\models\search\RoleSearch;
@@ -119,8 +120,10 @@ class RoleController extends BaseRbacController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model=$this->findModel($id);
 
+        $model->delete();
+        User::updateAll(['role'=>''],['role'=>$id]);
         return $this->redirect(['index']);
     }
 

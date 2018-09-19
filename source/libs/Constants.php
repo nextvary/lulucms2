@@ -37,6 +37,16 @@ class Constants
         return ArrayHelper::getItems($items, $key);
     }
 
+    public static function getPermissionType($key = null)
+    {
+        $items = [
+            1 => '角色',
+            2 => '权限'
+        ];
+        return ArrayHelper::getItems($items, $key);
+    }
+
+
     const Target_Self = '_self';
     const Target_blank = '_blank';
     public static function getTargetItems($key = null)

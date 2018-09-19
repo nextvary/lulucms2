@@ -2,6 +2,7 @@
 
 namespace source\models;
 
+use source\modules\rbac\models\Relation;
 use Yii;
 use source\libs\Constants;
 
@@ -32,6 +33,28 @@ class User extends \source\core\base\BaseActiveRecord  implements \yii\web\Ident
     }
 
     /**
+     * @param $role 创建用户,查询当前角色的权限
+     */
+    public static function getPermissionByRole($role)
+    {
+        $data=Relation::find()->select('*')->join('inner join','{{%auth_permission}} p','p.id={{%auth_relation}}.permission')->where(['category'=>'controller','role'=>$role])->asArray()->all();
+        foreach ($data as &$item) {
+            $need=[];
+            $item['default_value']=explode("\r\n",$item['default_value']);
+            $item['value']=explode(",",$item['value']);
+            foreach ($item['default_value'] as $default_value) {
+                $value=substr($default_value,0,strpos($default_value,"|"));
+                if(in_array($value,$item['value'])){
+                    $need[]=$default_value;
+                }
+            }
+            $item['default_value']=$need;
+        }
+
+        return $data;
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -40,9 +63,10 @@ class User extends \source\core\base\BaseActiveRecord  implements \yii\web\Ident
             [['username', 'auth_key', 'password_hash', 'email','role'], 'required'],
             [['username','email'],'unique'],
             [['password'], 'required','on'=>['login','create']],
-            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['status', 'created_at', 'updated_at','type'], 'integer'],
             ['email','email'],
             [['username', 'password_hash', 'password_reset_token', 'email','auth_key'], 'string', 'max' => 255],
+            [['permission'], 'string', 'max' => 255555],
         ];
     }
 
@@ -50,7 +74,7 @@ class User extends \source\core\base\BaseActiveRecord  implements \yii\web\Ident
     {
     	$parent = parent::scenarios();
     	$parent['login'] = ['username','password'];
-    	$parent['create'] = ['username','password', 'email','status','role'];
+    	$parent['create'] = ['username','password', 'email','status','role','permission','type'];
     	$parent['update'] = ['username','password', 'email','status','updated_at','role'];
     	return $parent;
     }
@@ -72,7 +96,9 @@ class User extends \source\core\base\BaseActiveRecord  implements \yii\web\Ident
             'statusText' => '状态',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
-            'role'=>'角色'
+            'role'=>'角色',
+            'type'=>'权限类型',
+            'permission'=>'权限'
         ];
     }
     public function getStatusText()

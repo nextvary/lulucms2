@@ -2,6 +2,8 @@
 
 namespace source\modules\user\admin\controllers;
 
+use source\modules\rbac\models\Permission;
+use source\modules\rbac\models\Relation;
 use Yii;
 use source\models\User;
 use source\models\search\UserSearch;
@@ -50,12 +52,35 @@ class UserController extends BackController
      */
     public function actionCreate()
     {
+        if (Yii::$app->request->isAjax){
+            $data=Yii::$app->request->get();
+            $role=$data['role'];
+            $data=User::getPermissionByRole($role);
+            return json_encode($data,320);
+        }
+
         $model = new User();
         $model->scenario='create';
         $model->status = Constants::Status_Enable;
+        $model->type = 1;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->type==2){
+                $Permission=Yii::$app->request->post()['Permission'];
+                $need='';
+                foreach ($Permission as $key=>$value) {
+                    $need.=$key.'_'.implode(',',$value)."|";
+                }
+                $need=rtrim($need,'|');
+                $model->permission=$need;
+            }
+            if($model->save()){
+                 return $this->redirect(['index']);
+            }else{
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -73,9 +98,27 @@ class UserController extends BackController
     {
         $model = $this->findModel($id);
         $model->scenario='update';
+        $model->permission=Permission::getPermissionsByString($model->permission);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->type==2){
+                $Permission=Yii::$app->request->post()['Permission'];
+                $need='';
+                foreach ($Permission as $key=>$value) {
+                    $need.=$key.'_'.implode(',',$value)."|";
+                }
+                $need=rtrim($need,'|');
+                $model->permission=$need;
+            }else{
+                $model->permission='';
+            }
+            if($model->save()){
+                return $this->redirect(['index']);
+            }else{
+                return $this->render('update', [
+                    'model' => $model,
+                ]);
+            }
         } else {
             return $this->render('update', [
                 'model' => $model,
