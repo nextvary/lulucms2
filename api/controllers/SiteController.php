@@ -22,7 +22,6 @@ class SiteController extends BaseController
     public function actionGit(){
         echo 1;
         $result=system('sh '.$_SERVER['DOCUMENT_ROOT'].'/crontab/git.sh');
-        var_dump($result);
-//        system('sh /usr/local/work/.sh');
+        var_dump(111);
     }
 }
