@@ -6,4 +6,17 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'source\\helpers\\DateTimeHelper' => $baseDir . '/source/Helpers/DateTimeHelper.php',
+    'yii\\helpers\\ArrayHelper' => $baseDir . '/source/Helpers/ArrayHelper.php',
+    'yii\\helpers\\Console' => $baseDir . '/source/Helpers/Console.php',
+    'yii\\helpers\\FileHelper' => $baseDir . '/source/Helpers/FileHelper.php',
+    'yii\\helpers\\FormatConverter' => $baseDir . '/source/Helpers/FormatConverter.php',
+    'yii\\helpers\\Html' => $baseDir . '/source/Helpers/Html.php',
+    'yii\\helpers\\HtmlPurifier' => $baseDir . '/source/Helpers/HtmlPurifier.php',
+    'yii\\helpers\\Inflector' => $baseDir . '/source/Helpers/Inflector.php',
+    'yii\\helpers\\Json' => $baseDir . '/source/Helpers/Json.php',
+    'yii\\helpers\\Markdown' => $baseDir . '/source/Helpers/Markdown.php',
+    'yii\\helpers\\StringHelper' => $baseDir . '/source/Helpers/StringHelper.php',
+    'yii\\helpers\\Url' => $baseDir . '/source/Helpers/Url.php',
+    'yii\\helpers\\VarDumper' => $baseDir . '/source/Helpers/VarDumper.php',
 );

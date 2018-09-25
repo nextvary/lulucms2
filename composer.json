@@ -1,0 +1,17 @@
+{
+  "require": {
+  },
+  "autoload": {
+    "classmap": [
+      "source/Helpers"
+    ],
+    "files": [
+      "source/Helpers/function.php"
+    ],
+    "psr-4": {
+      "App\\":"app",
+      "Swoole\\":"vendor/Swoole/",
+      "vary\\":"vendor/vary/"
+    }
+  }
+}
