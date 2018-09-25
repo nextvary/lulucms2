@@ -6,7 +6,6 @@
       "source/Helpers"
     ],
     "files": [
-      "source/helpers/function.php"
     ],
     "psr-4": {
       "App\\":"app",
