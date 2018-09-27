@@ -3,28 +3,39 @@ namespace vary;
 
 class curl
 {
+    public $url;
+    public $ch;
+    public $msg;
+    public $close=true;
     function __construct($url='')
     {
+        $this->ch=curl_init();
         $this->url=$url;
     }
     public function setUrl($url){
         $this->url=$url;
         return $this;
     }
-
-    public $url;
+    public function setOption($key=CURLOPT_REFERER,$value=''){
+        curl_setopt($this->ch, $key, $value);
+    }
 
 	public function get($bool = true){
-		$ch = curl_init();
+		$ch = $this->ch;
 		curl_setopt($ch,CURLOPT_URL,$this->url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, $bool);
-		$rs = curl_exec($ch);
+        $rs = curl_exec($ch);
 		$errno=curl_errno($ch);
 		$error=curl_error($ch);
-		curl_close($ch);
+        $errorinfo=curl_getinfo($ch);
+        $this->msg=[$error,$errorinfo,$errno];
+        if($this->close){
+       		curl_close($ch);
+        }
 		if($errno==0){
 			return $rs;
 		}else{
+            var_dump($errorinfo);
 			return 'curl错误,错误代码:'.$errno.';错误信息:'.$error;
 		}
 	}
@@ -48,7 +59,9 @@ class curl
         $rs = curl_exec($ch);
 		$errno=curl_errno($ch);
 		$error=curl_error($ch);
-		curl_close($ch);
+        if($this->close){
+            curl_close($ch);
+        }
 		if($errno==0){
 			return $rs;
 		}else{
@@ -82,7 +95,9 @@ class curl
         $rs = curl_exec($ch);
         $errno=curl_errno($ch);
         $error=curl_error($ch);
-        curl_close($ch);
+        if($this->close){
+            curl_close($ch);
+        }
         if($errno==0){
             return $rs;
         }else{
