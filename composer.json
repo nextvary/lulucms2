@@ -1,6 +1,5 @@
 {
-  "require": {
-  },
+
   "autoload": {
     "classmap": [
       "source/Helpers"
@@ -12,5 +11,11 @@
       "Swoole\\":"vendor/Swoole/",
       "vary\\":"vendor/vary/"
     }
+  },
+  "minimum-stability": "stable",
+  "require": {
+    "yiisoft/yii2-redis": "^2.0",
+    "yidas/yii2-composer-bower-skip": "^2.0",
+    "composer-plugin-api": "^1.1"
   }
 }

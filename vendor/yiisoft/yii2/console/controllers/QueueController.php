@@ -27,23 +27,7 @@ class QueueController extends Controller
 
     public function actionWork()
     {
-        ini_set('default_socket_timeout', -1);  //避免在默认的配置下，1分钟后终端了与redis服务器的链接
+//        ini_set('default_socket_timeout', -1);  //避免在默认的配置下，1分钟后终端了与redis服务器的链接
         $redis = Yii::$app->redis;
-        $redis->connect('127.0.0.1', 6379);
-        $redis->subscribe(['task_queue'], function ($redis, $chan, $msg) {
-            switch ($chan) {
-                case 'task_queue':
-                    $task = unserialize($msg);
-                    if ($task['task'] == 'send_email') {
-                        // send email
-                    }
-                    // do other job
-                    break;
-                default:
-                    break;
-            }
-        });
-
-
     }
 }

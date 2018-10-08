@@ -57,4 +57,18 @@ return array (
       '@yii/faker' => $vendorDir . '/yiisoft/yii2-faker',
     ),
   ),
+  'yiisoft/yii2-redis' => 
+  array (
+    'name' => 'yiisoft/yii2-redis',
+    'version' => '2.0.5.0',
+    'alias' => 
+    array (
+      '@yii/redis' => $vendorDir . '/yiisoft/yii2-redis',
+    ),
+  ),
+  'yidas/yii2-composer-bower-skip' => 
+  array (
+    'name' => 'yidas/yii2-composer-bower-skip',
+    'version' => '2.0.13.0',
+  ),
 );

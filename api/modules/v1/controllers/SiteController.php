@@ -9,7 +9,11 @@
 namespace api\modules\v1\controllers;
 
 
-class SiteController
-{
+use api\controllers\ApiController;
 
+class SiteController extends ApiController
+{
+    public function actionGet(){
+        echo '1';
+    }
 }

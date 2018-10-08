@@ -51,14 +51,9 @@ str;
         return myfunction::json(1, 'eee');
     }
 
-    public function acitonTest(){
-        $redis = new Redis();
-        $redis->connect('192.168.1.12');
-        $task = [
-            'task'=>'send_email',
-            'data'=>'你好，隔壁老王',
-        ];
-        $redis->publish('task_queue', serialize($task));
+    public function actionTest(){
+       $redis=Yii::$app->redis;
+        var_dump($redis->get('renfei'));
 
     }
 

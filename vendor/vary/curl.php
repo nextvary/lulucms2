@@ -40,8 +40,8 @@ class curl
 		}
 	}
 
-	public function post($post ,$type,$bool = true){
-		$ch = curl_init();
+	public function post($post ,$type='',$bool = true){
+		$ch = $this->ch;
 		curl_setopt($ch,CURLOPT_URL,$this->url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, $bool);
 		curl_setopt($ch, CURLOPT_POST, true);
@@ -53,6 +53,8 @@ class curl
             );
 
 
+        }elseif($type='build'){
+            $post=http_build_query($post);
         }
         curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 设置超时限制防止死循环
         curl_setopt($ch, CURLOPT_POSTFIELDS,$post);
